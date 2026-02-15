@@ -5,5 +5,5 @@ url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1k4Liz4HvtBM6s8OaPex9E_
 
 df = pd.read_csv(url)
 
-st.title("Fest Tally Dashboard")
+st.title("CASadya 2026 Leaderboards")
 st.bar_chart(df.set_index("ORGANIZATION"))
