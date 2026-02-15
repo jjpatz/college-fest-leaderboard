@@ -12,7 +12,6 @@ url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1k4Liz4HvtBM6s8OaPex9E_
 df = pd.read_csv(url)
 df = df.sort_values(by=df.columns[1], ascending=False)
 
-# Get current time
 now = datetime.now(pytz.timezone('Asia/Manila'))
 last_updated = now.strftime("%B %d, %Y | %I:%M %p")
 
@@ -42,43 +41,35 @@ html, body, [class*="css"] {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(15px);
     border-radius: 20px;
-    padding: 20px;
+    padding: 10px; /* Reduced for mobile */
     border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.header-container {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 .footer-update {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 10px;
+    right: 10px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    font-size: 10px; /* Smaller for mobile */
     color: white;
-    text-shadow: 1px 1px 3px #000000;
     z-index: 999;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 8px;
     border-radius: 5px;
 }
 
-h1 { 
-    color: white !important; 
-    text-shadow: 2px 2px 8px #000000; 
-    text-align: center;
-    margin-top: 5px !important;
+/* Ensure the logo shrinks on small screens */
+.header-container img {
+    max-width: 100%;
+    height: auto;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# 4. LOGO DISPLAY
+# 4. LOGO
 logo_url = "https://raw.githubusercontent.com/jjpatz/college-fest-leaderboard/main/logo.png"
-
 st.markdown(f"""
-    <div class="header-container">
+    <div class="header-container" style="text-align:center;">
         <img src="{logo_url}" width="600">
     </div>
     <div class="footer-update">Updated as of {last_updated}</div>
@@ -86,64 +77,49 @@ st.markdown(f"""
 
 # 5. PLOTLY CHART
 fig = px.bar(
-    df, 
-    x="ORGANIZATION", 
-    y=df.columns[1], 
-    text=df.columns[1],
-    color=df.columns[1], 
-    color_continuous_scale=["#31D07E", "#10B981", "#065F46"] 
+    df, x="ORGANIZATION", y=df.columns[1], text=df.columns[1],
+    color=df.columns[1], color_continuous_scale=["#31D07E", "#10B981", "#065F46"] 
 )
 
+# Text on TOP of bars (Responsive size)
 fig.update_traces(
     texttemplate='<b>%{text}</b>', 
     textposition="outside",
     marker_line_width=0,
-    marker_cornerradius=15,
-    hovertemplate="<b>Organization %{x}</b><br>Points: <b>%{y}</b><extra></extra>",
-    textfont=dict(size=15, color="white")
+    marker_cornerradius=10,
+    textfont=dict(size=15) # Plotly will try to scale this
 )
 
-# Organization labels inside bars
+# Organization labels INSIDE bars (Responsive adjustment)
 for i, (index, row) in enumerate(df.iterrows()):
     fig.add_annotation(
         x=row["ORGANIZATION"],
         y=0, 
         text=f"<b>{row['ORGANIZATION']}</b>",
         showarrow=False,
-        yshift=30, 
-        font=dict(color="white", size=25, family="Lexend"),
-        textangle=0 
+        yshift=20, 
+        font=dict(color="white", size=20), # Smaller default size works better for both
+        textangle=-90 if len(df) > 5 else 0 # Auto-rotate if many orgs exist
     )
 
-# 6. LAYOUT (FIXED SYNTAX)
+# 6. LAYOUT (Responsive tweaks)
 fig.update_layout(
     xaxis={
         'visible': True,
         'showticklabels': False,
-        'title': {
-            'text': "<b>Participating Organizations</b>",
-            'font': {'family': "Lexend", 'size': 20, 'color': "white"},
-            'standoff': 40
-        },
-        'fixedrange': True
+        'title': {'text': "<b>Organizations</b>", 'font': {'size': 14}, 'standoff': 20}
     },
     yaxis={
         'visible': True,
         'showticklabels': False,
-        'title': {
-            'text': "<b>Total Points</b>",
-            'font': {'family': "Lexend", 'size': 20, 'color': "white"},
-            'standoff': 20
-        },
-        'fixedrange': True
+        'title': {'text': "<b>Points</b>", 'font': {'size': 14}, 'standoff': 10}
     },
     coloraxis_showscale=False,
     paper_bgcolor='rgba(0,0,0,0)', 
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family="Lexend", color="white"),
-    margin=dict(t=50, b=100, l=80, r=25), # Increased left (l) and bottom (b) for titles
-    bargap=0.05
+    margin=dict(t=40, b=40, l=40, r=10), # Tighter margins for mobile
+    bargap=0.05,
+    autosize=True # Crucial for mobile scaling
 )
 
-with st.container():
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
