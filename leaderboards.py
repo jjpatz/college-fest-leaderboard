@@ -81,6 +81,16 @@ fig = px.bar(
     color=df.columns[1], color_continuous_scale=["#31D07E", "#10B981", "#065F46"] 
 )
 
+fig.update_traces(
+    texttemplate='<b>%{text}</b>', 
+    textposition="outside",
+    marker_line_width=0,
+    marker_cornerradius=10,
+    textfont=dict(size=15, color="white"),
+    hovertemplate="<b>Organization %{x}</b><br>Points: <b>%{y}</b><extra></extra>"
+)
+
+
 # Text on TOP of bars (Responsive size)
 fig.update_traces(
     texttemplate='<b>%{text}</b>', 
@@ -97,8 +107,8 @@ for i, (index, row) in enumerate(df.iterrows()):
         y=0, 
         text=f"<b>{row['ORGANIZATION']}</b>",
         showarrow=False,
-        yshift=20, 
-        font=dict(color="white", size=20), # Smaller default size works better for both
+        yshift=30, 
+        font=dict(color="white", size=35), # Smaller default size works better for both
         textangle=-90 if len(df) > 5 else 0 # Auto-rotate if many orgs exist
     )
 
