@@ -60,6 +60,7 @@ h1 {
 logo_url = "https://raw.githubusercontent.com/jjpatz/college-fest-leaderboard/main/logo.png"
 st.markdown(f'<div class="logo-container"><img src="{logo_url}" width="600"></div>', unsafe_allow_html=True)
 
+
 # 4. PLOTLY CHART
 # We create the figure with the scores as the primary text
 fig = px.bar(
@@ -69,7 +70,7 @@ fig = px.bar(
 )
 
 # ADDING NAMES INSIDE THE BARS
-custom_greens = ["#D1FAE5", "#10B981", "#065F46"] 
+custom_greens = ["#10B981", "#065F46"] 
 
 fig = px.bar(
     df, x="ORGANIZATION", y=df.columns[1], 
