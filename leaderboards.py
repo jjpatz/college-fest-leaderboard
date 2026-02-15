@@ -51,7 +51,6 @@ html, body, [class*="css"] {
     margin-bottom: 20px;
 }
 
-/* FIX TO BOTTOM RIGHT */
 .footer-update {
     position: fixed;
     bottom: 20px;
@@ -86,14 +85,13 @@ st.markdown(f"""
     """, unsafe_allow_html=True)
 
 # 5. PLOTLY CHART
-# Color is now mapped to the points column (df.columns[1])
 fig = px.bar(
     df, 
     x="ORGANIZATION", 
     y=df.columns[1], 
     text=df.columns[1],
     color=df.columns[1], 
-    color_continuous_scale=["#31D07E", "#10B981", "#065F46"] # Light to Dark Green
+    color_continuous_scale=["#31D07E", "#10B981", "#065F46"] 
 )
 
 fig.update_traces(
@@ -105,6 +103,7 @@ fig.update_traces(
     textfont=dict(size=15, color="white")
 )
 
+# Organization labels inside bars
 for i, (index, row) in enumerate(df.iterrows()):
     fig.add_annotation(
         x=row["ORGANIZATION"],
@@ -116,14 +115,33 @@ for i, (index, row) in enumerate(df.iterrows()):
         textangle=0 
     )
 
+# 6. LAYOUT (FIXED SYNTAX)
 fig.update_layout(
-    xaxis={'visible': False},
-    yaxis_visible=False,
-    coloraxis_showscale=False, # Hides the color grade bar on the right
+    xaxis={
+        'visible': True,
+        'showticklabels': False,
+        'title': {
+            'text': "<b>Participating Organizations</b>",
+            'font': {'family': "Lexend", 'size': 20, 'color': "white"},
+            'standoff': 40
+        },
+        'fixedrange': True
+    },
+    yaxis={
+        'visible': True,
+        'showticklabels': False,
+        'title': {
+            'text': "<b>Total Points</b>",
+            'font': {'family': "Lexend", 'size': 20, 'color': "white"},
+            'standoff': 20
+        },
+        'fixedrange': True
+    },
+    coloraxis_showscale=False,
     paper_bgcolor='rgba(0,0,0,0)', 
     plot_bgcolor='rgba(0,0,0,0)',
     font=dict(family="Lexend", color="white"),
-    margin=dict(t=50, b=20, l=25, r=25),
+    margin=dict(t=50, b=100, l=80, r=25), # Increased left (l) and bottom (b) for titles
     bargap=0.05
 )
 
