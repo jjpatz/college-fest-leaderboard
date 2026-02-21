@@ -108,7 +108,7 @@ for i, (index, row) in enumerate(df.iterrows()):
         text=f"<b>{row['ORGANIZATION']}</b>",
         showarrow=False,
         yshift=30, 
-        font=dict(color="white", size=35), # Smaller default size works better for both
+        font=dict(color="white", size=12), # Smaller default size works better for both
         textangle=-90 if len(df) > 5 else 0 # Auto-rotate if many orgs exist
     )
 
